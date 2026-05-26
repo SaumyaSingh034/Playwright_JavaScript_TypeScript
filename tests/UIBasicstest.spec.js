@@ -72,18 +72,33 @@ test('Blinking Link Validation', async({page}) => {
 test('Child Window Handling', async({browser}) => {
     const context =  await browser.newContext();
    const page = await context.newPage();
+   const userName = page.locator('#username');
+   const password = page.locator("[type='password']");
+   const signInBtn = page.locator("#signInBtn");
+   const carTitles = page.locator(".card-body a");
+   const dropdown = page.locator("select.form-control");
 
     const documentLink = page.locator("[href*='documents-request']");
    const techSmartHire = page.locator("[href*='tech']");
    await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
    console.log(await page.title());
    
-   const[newPage] = Promise.all([
+   const [newPage] = await Promise.all([
       context.waitForEvent('page'),
-      await documentLink.click(),
+      documentLink.click(),
    ])
-   console.log(await newPage.locator("p.im-para.red").first().textContent());
-   
+
+   const text = await newPage.locator(".red").textContent();
+   const arrayText = text.split("@");
+   const domain = arrayText[1].split(" ")[0];
+   console.log(text);
+   console.log(domain);
+
+   await userName.fill(domain);
+   console.log(await userName.inputValue());
+
+
+
 
 });
 
