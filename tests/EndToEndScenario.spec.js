@@ -9,8 +9,9 @@ test.only('End To End Scenarios', async({page}) => {
     const email = "chadlerBing54654@gmail.com";
     const registerPassword = "GodBlesYou@22";
     const cardTitles = page.locator(".card-body b");
-    const products = page.locator("card-body");
-    const productName = "Zara Coat 3"
+    const products = page.locator(".card-body");
+    const productName = 'ZARA COAT 3';
+    const cartBtn = page.locator("[routerLink*='cart']");
 
 await page.goto("https://rahulshettyacademy.com/client/#/auth/login");
 await console.log(page.title());
@@ -19,16 +20,24 @@ await password.fill(registerPassword);
 await loginBtn.click();
 await console.log(page.title());
 await page.waitForLoadState('networkidle');
-const titles = await cardTitles.allTextContents();
-console.log(titles);
-const count = await products.count();
-for(let i = 0; i< count; ++i){ 
-    if(await products.nth(i).locator("b").textContent() == productName){
+ await page.locator(".card-body b").first().waitFor();
+   const titles = await page.locator(".card-body b").allTextContents();
+   console.log(titles); 
+   const count = await products.count();
 
-        await products.nth(i).locator("text= Add To Cart").click();
-        break;
-    }
-}
+for (let i = 0; i < count; ++i) {
+      if (await products.nth(i).locator("b").textContent() === productName) {
+         //add to cart
+         await products.nth(i).locator("text= Add To Cart").click();
+         break;
+      }
+   }
+
+await cartBtn.click();
+await page.locator("div li").first().waitFor();
+const bool = await page.locator("h3:has-text('ZARA COAT 3')").isVisible();
+expect(bool).toBeTruthy();
+
 await page.pause();
 
 
