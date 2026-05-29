@@ -12,6 +12,8 @@ test.only('End To End Scenarios', async({page}) => {
     const products = page.locator(".card-body");
     const productName = 'ZARA COAT 3';
     const cartBtn = page.locator("[routerLink*='cart']");
+    const creditCardNumber = page.locator("[value*='4542']");
+    
 
 await page.goto("https://rahulshettyacademy.com/client/#/auth/login");
 await console.log(page.title());
@@ -37,6 +39,10 @@ await cartBtn.click();
 await page.locator("div li").first().waitFor();
 const bool = await page.locator("h3:has-text('ZARA COAT 3')").isVisible();
 expect(bool).toBeTruthy();
+
+await page.locator("text= Checkout").click()
+
+//Checkout Details
 
 await page.pause();
 
