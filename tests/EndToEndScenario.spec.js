@@ -42,7 +42,45 @@ expect(bool).toBeTruthy();
 
 await page.locator("text= Checkout").click()
 
-//Checkout Details
+await page.locator("[placeholder*='Country']").pressSequentially("ind", { delay: 150 });
+
+const dropDown = page.locator(".ta-results").first();
+await dropDown.waitFor();
+
+const optionsCount = await dropDown.locator("button").count();
+for(let i=0;i<optionsCount; ++i){
+   const text = await dropDown.locator("button").nth(i).textContent();
+   if(text === " India"){
+      await dropDown.locator("button").nth(i).click();
+      break;
+   }
+}
+
+await expect(page.locator("label[style*='lightgray']")).toHaveText(email);
+//await expect(page.locator("input[class*='text-validated ng-untouched ng-pristine']")).toHaveText(email);
+
+await page.locator(".btnn.action__submit").click();
+
+//Order Summary Page Validation
+
+expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ");
+
+const OrderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
+console.log(OrderId);
+
+//Order Page Validations
+await page.locator("[routerLink='/dashboard/myorders']").first().click();
+
+await page.locator("tbody").waitFor();
+const rows = page.locator("tbody tr");
+
+for(let i=0;i<rows; ++i){
+   const rowOrderId = await rows.nth(i).locator("th").textContent();
+   if(OrderId.includes(rowOrderId)){
+      await rows.nth(i).locator("button").first().click();
+      break;
+   }
+}
 
 await page.pause();
 
